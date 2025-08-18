@@ -76,6 +76,19 @@ window.addEventListener('click', function(event) {
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         closeModal();
+        closeMobileMenu();
+    }
+});
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(event) {
+    const overlay = document.getElementById('mobileNavOverlay');
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    
+    if (overlay.classList.contains('active') && 
+        !overlay.contains(event.target) && 
+        !toggle.contains(event.target)) {
+        closeMobileMenu();
     }
 });
 
@@ -155,6 +168,25 @@ function updateHeaderOpacity() {
     } else {
         header.classList.remove('scrolled');
     }
+}
+
+// Mobile menu functionality
+function toggleMobileMenu() {
+    const overlay = document.getElementById('mobileNavOverlay');
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    
+    overlay.classList.toggle('active');
+    toggle.classList.toggle('active');
+    document.body.style.overflow = overlay.classList.contains('active') ? 'hidden' : 'auto';
+}
+
+function closeMobileMenu() {
+    const overlay = document.getElementById('mobileNavOverlay');
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    
+    overlay.classList.remove('active');
+    toggle.classList.remove('active');
+    document.body.style.overflow = 'auto';
 }
 
 // Initialize page functionality
