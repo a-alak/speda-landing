@@ -154,13 +154,17 @@
                     <div class="story-content">
                         <h2>Our Story</h2>
                         <p>SPEDA is a young MedTech company based in Copenhagen. It was founded by <strong>Ali Al-Alak</strong> who, during the COVID pandemic, personally experienced the inefficiencies of manual data extraction in research projects. He envisioned a better solution and, with support from Copenhagen University's innovation hub, assembled a team. Today SPEDA works on customer projects and collaborates with medical researchers to develop software that adheres to high privacy standards while increasing efficiency.</p>
-                        <img src="images/11062b_afa48ab6ade4434c882e28c65f76a373~mv2.avif" alt="Overhead photo of team collaboration" class="story-image" />
+                        <div class="story-image-container">
+                            <img src="images/11062b_afa48ab6ade4434c882e28c65f76a373~mv2.avif" alt="Overhead photo of team collaboration" class="story-image" />
+                        </div>
                     </div>
                     
                     <div class="vision-content">
                         <h2>Our Vision</h2>
                         <p>SPEDA's vision is to harness data to drive healthcare research while respecting patient privacy. They aim to remove barriers presented by outdated systems and imagine a future where data flows securely and insights are gleaned rapidly. Their mission emphasises balancing data utility and privacy, building systems with the highest security and ushering in a new era of healthcare innovation.</p>
-                        <img src="images/d22758_4acc70661f4a47388a4a35d8f19a0c24~mv2.avif" alt="Researcher analyzing DNA on monitors" class="vision-image" />
+                        <div class="vision-image-container">
+                            <img src="images/d22758_4acc70661f4a47388a4a35d8f19a0c24~mv2.avif" alt="Researcher analyzing DNA on monitors" class="vision-image" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -369,6 +373,7 @@
                 <button class="close-btn" onclick="closeModal()">&times;</button>
             </div>
             <form class="contact-form">
+                <div class="form-message" id="formMessage"></div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstName">First name</label>
@@ -393,7 +398,10 @@
                         I'm not a robot (reCAPTCHA placeholder)
                     </label>
                 </div>
-                <button type="submit" class="submit-btn">Send</button>
+                <button type="submit" class="submit-btn">
+                    <div class="spinner"></div>
+                    <span class="btn-text">Send</span>
+                </button>
                 <div class="alternative-contact">
                     <p>✉️ hi@speda.io</p>
                 </div>

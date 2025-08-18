@@ -51,17 +51,29 @@ function openModal() {
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
     
+    // Add active class with slight delay for animation
+    setTimeout(() => {
+        modal.classList.add('active');
+    }, 10);
+    
     // Focus trap
     const firstFocusableElement = modal.querySelector('input, button, textarea');
     if (firstFocusableElement) {
-        firstFocusableElement.focus();
+        setTimeout(() => {
+            firstFocusableElement.focus();
+        }, 350);
     }
 }
 
 function closeModal() {
     const modal = document.getElementById('contactModal');
-    modal.style.display = 'none';
+    modal.classList.remove('active');
     document.body.style.overflow = 'auto';
+    
+    // Hide modal after animation completes
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300);
 }
 
 // Close modal when clicking outside
@@ -141,21 +153,54 @@ function prevTestimonial() {
 }
 
 // Contact form submission
-function handleFormSubmission(event) {
+async function handleFormSubmission(event) {
     event.preventDefault();
     
-    const formData = new FormData(event.target);
-    const data = Object.fromEntries(formData);
+    const form = event.target;
+    const submitBtn = form.querySelector('.submit-btn');
+    const formMessage = document.getElementById('formMessage');
     
-    // Here you would typically send the data to a server
-    console.log('Form submitted with data:', data);
+    // Show loading state
+    setFormLoading(true);
+    hideFormMessage();
     
-    // Show success message (placeholder)
-    alert('Thank you for your message! We\'ll get back to you soon.');
-    closeModal();
-    
-    // Reset form
-    event.target.reset();
+    try {
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Here you would typically send the data to a server
+        console.log('Form submitted with data:', data);
+        
+        // Show success message
+        showFormMessage('Thank you for your message! We\'ll get back to you soon.', 'success');
+        
+        // Reset form after delay
+        setTimeout(() => {
+            form.reset();
+            closeModal();
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Form submission error:', error);
+        showFormMessage('Sorry, there was an error sending your message. Please try again.', 'error');
+    } finally {
+        setFormLoading(false);
+    }
+}
+
+// Show/hide form messages
+function showFormMessage(message, type) {
+    const formMessage = document.getElementById('formMessage');
+    formMessage.textContent = message;
+    formMessage.className = `form-message ${type} show`;
+}
+
+function hideFormMessage() {
+    const formMessage = document.getElementById('formMessage');
+    formMessage.classList.remove('show');
 }
 
 // Header scroll opacity functionality
@@ -305,11 +350,11 @@ function setFormLoading(isLoading) {
     const formInputs = document.querySelectorAll('.contact-form input, .contact-form textarea');
     
     if (isLoading) {
-        submitBtn.textContent = 'Sending...';
+        submitBtn.classList.add('loading');
         submitBtn.disabled = true;
         formInputs.forEach(input => input.disabled = true);
     } else {
-        submitBtn.textContent = 'Send';
+        submitBtn.classList.remove('loading');
         submitBtn.disabled = false;
         formInputs.forEach(input => input.disabled = false);
     }
