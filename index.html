@@ -1,414 +1,988 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SPEDA - Automating Data Extraction from Health Records</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <meta
+      name="description"
+      content="SPEDA automates data extraction from electronic health records using AI. Fast, secure, and GDPR compliant solutions for medical research."
+    />
+
+    <!-- Preload critical resources -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript
+      ><link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    /></noscript>
+    <link rel="preload" href="images/hero.jpg" as="image" />
+    <link rel="preload" href="images/logo.avif" as="image" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/icon.png" />
+
+    <!-- DNS prefetch for better performance -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+
+    <!-- Critical CSS for above-the-fold content -->
+    <style>
+      /* Critical path CSS - above the fold */
+      :root {
+        --primary-500: #8b4def;
+        --primary-600: #7c3ae8;
+        --neutral-50: #fafafa;
+        --neutral-800: #262626;
+        --neutral-950: #0a0a0a;
+        --color-text: var(--neutral-950);
+        --color-background: var(--neutral-50);
+        --space-4: 16px;
+        --space-5: 20px;
+        --radius-md: 6px;
+        --shadow-md:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --transition-normal: 300ms ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        line-height: 1.75;
+        color: var(--color-text);
+        background-color: var(--color-background);
+        font-size: clamp(16px, 2.5vw, 18px);
+      }
+
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        z-index: 1000;
+        border-bottom: 1px solid #e5e5e5;
+      }
+
+      .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-block: 15px;
+        padding-inline: 20px;
+        max-inline-size: 1200px;
+        margin-inline: auto;
+      }
+
+      .logo-image {
+        height: 32px;
+        width: auto;
+      }
+
+      .hero {
+        background: url("images/hero.jpg") center/cover no-repeat;
+        height: 100vh;
+        display: flex;
+        align-items: flex-end;
+        position: relative;
+      }
+
+      .hero-container {
+        inline-size: 100%;
+        padding-block-end: 60px;
+        padding-inline-start: 40px;
+      }
+
+      .hero-content {
+        max-inline-size: 500px;
+      }
+
+      .hero-content h1 {
+        font-size: clamp(36px, 6vw, 56px);
+        font-weight: 300;
+        color: var(--color-text);
+        margin-bottom: clamp(24px, 4vw, 40px);
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+      }
+    </style>
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <!-- Skip Links for Accessibility -->
     <div class="skip-links">
-        <a href="#main-content" class="skip-link">Skip to main content</a>
-        <a href="#navigation" class="skip-link">Skip to navigation</a>
+      <a href="#main-content" class="skip-link">Skip to main content</a>
+      <a href="#navigation" class="skip-link">Skip to navigation</a>
     </div>
-    
+
     <!-- Fixed Header -->
     <header class="header">
-        <div class="header-container">
-            <div class="logo">
-                <a href="#top" class="logo-link" onclick="scrollToTop()">
-                    <img src="images/logo.avif" alt="SPEDA" class="logo-image">
-                </a>
-            </div>
-            <div class="nav-right">
-                <nav class="navigation" id="navigation" role="navigation" aria-label="Main navigation">
-                    <a href="#solution" class="nav-link">Solution</a>
-                    <a href="#why-us" class="nav-link">Why Us</a>
-                    <a href="#about" class="nav-link">About</a>
-                    <a href="#team" class="nav-link">Team</a>
-                    <a href="#faq" class="nav-link">FAQ</a>
-                </nav>
-                <button class="contact-btn" onclick="openModal()">Contact Us</button>
-                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-            
-            <!-- Mobile Navigation Overlay -->
-            <div class="mobile-nav-overlay" id="mobileNavOverlay">
-                <nav class="mobile-navigation">
-                    <a href="#solution" class="mobile-nav-link" onclick="closeMobileMenu()">Solution</a>
-                    <a href="#why-us" class="mobile-nav-link" onclick="closeMobileMenu()">Why Us</a>
-                    <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">About</a>
-                    <a href="#team" class="mobile-nav-link" onclick="closeMobileMenu()">Team</a>
-                    <a href="#faq" class="mobile-nav-link" onclick="closeMobileMenu()">FAQ</a>
-                    <button class="mobile-contact-btn" onclick="openModal(); closeMobileMenu();">Contact Us</button>
-                </nav>
-            </div>
+      <div class="header-container">
+        <div class="logo">
+          <a href="#top" class="logo-link" onclick="scrollToTop()">
+            <img
+              src="images/logo.avif"
+              alt="SPEDA"
+              class="logo-image"
+              fetchpriority="high"
+            />
+          </a>
         </div>
+        <div class="nav-right">
+          <nav
+            class="navigation"
+            id="navigation"
+            role="navigation"
+            aria-label="Main navigation"
+          >
+            <a href="#solution" class="nav-link">Solution</a>
+            <a href="#why-us" class="nav-link">Why Us</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#team" class="nav-link">Team</a>
+            <a href="#faq" class="nav-link">FAQ</a>
+          </nav>
+          <button class="contact-btn" onclick="openModal()">Contact Us</button>
+          <button
+            class="mobile-menu-toggle"
+            onclick="toggleMobileMenu()"
+            aria-label="Toggle navigation menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+        <!-- Mobile Navigation Overlay -->
+        <div class="mobile-nav-overlay" id="mobileNavOverlay">
+          <nav class="mobile-navigation">
+            <a
+              href="#solution"
+              class="mobile-nav-link"
+              onclick="closeMobileMenu()"
+              >Solution</a
+            >
+            <a
+              href="#why-us"
+              class="mobile-nav-link"
+              onclick="closeMobileMenu()"
+              >Why Us</a
+            >
+            <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()"
+              >About</a
+            >
+            <a href="#team" class="mobile-nav-link" onclick="closeMobileMenu()"
+              >Team</a
+            >
+            <a href="#faq" class="mobile-nav-link" onclick="closeMobileMenu()"
+              >FAQ</a
+            >
+            <button
+              class="mobile-contact-btn"
+              onclick="openModal(); closeMobileMenu();"
+            >
+              Contact Us
+            </button>
+          </nav>
+        </div>
+      </div>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1>Automating Data Extraction and Structuring from Health Records</h1>
-                <button class="learn-more-btn" onclick="scrollToSection('solution')">Learn More</button>
-            </div>
+      <div class="hero-container">
+        <div class="hero-content">
+          <h1>
+            Automating Data Extraction and Structuring from Health Records
+          </h1>
+          <button class="learn-more-btn" onclick="scrollToSection('solution')">
+            Learn More
+          </button>
         </div>
+      </div>
     </section>
 
     <!-- Main Content -->
     <main id="main-content" role="main">
-        
-    <!-- The Issue Section -->
-    <section id="solution" class="section">
+      <!-- The Issue Section -->
+      <section id="solution" class="section">
         <div class="container">
-            <div class="content-row">
-                <div class="text-content">
-                    <h2>The Issue</h2>
-                    <p>Researchers often spend huge amounts of time manually extracting data from electronic health records – a process described as <em>"searching for a needle in a haystack."</em> It is time-consuming, error-prone and drains resources because there are no simple tools to integrate and categorise the data.</p>
-                </div>
-                <div class="image-content">
-                    <img src="images/d22758_bf5e60ff5ec1487c97e2a57d58c7db2a~mv2.avif" alt="Digital heart illustration with neural network connections" />
-                </div>
+          <div class="content-row">
+            <div class="text-content">
+              <h2>The Issue</h2>
+              <p>
+                Researchers today face a frustrating and time-consuming process
+                of manually extracting and organizing patient data from
+                electronic health records.
+              </p>
+              <p>
+                It's like searching for a needle in a haystack, sifting through
+                mountains of unstructured doctors' notes and clinical details.
+                Not only does this slow down and limit what research is being
+                done, but it also drains precious resources and introduces
+                errors that can compromise the quality of the studies.
+              </p>
+              <p>
+                The lack of seamless integration and categorization tools turns
+                what should be a straightforward task into a cumbersome,
+                error-prone and tiring process, delaying discoveries that could
+                save lives.
+              </p>
             </div>
+            <div class="image-content">
+              <img
+                src="images/d22758_bf5e60ff5ec1487c97e2a57d58c7db2a~mv2.avif"
+                alt="Digital heart illustration with neural network connections"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- Our Solution Section -->
-    <section class="section">
+      <!-- Our Solution Section -->
+      <section class="section">
         <div class="container">
-            <div class="content-row">
-                <div class="text-content">
-                    <h2>Our Solution</h2>
-                    <p>SPEDA automates extraction of patient information directly from electronic health records. When an API is available they use it; when there isn't one, an AI-based approach navigates the system like a human, but much faster. Their solution integrates with existing EHR systems and transfers data securely to an electronic data capture system. It stays on-premise for maximum security and uses AI to transform unstructured doctor notes into structured, analysis-ready data.</p>
-                </div>
-                <div class="image-content">
-                    <img src="images/d22758_18c109c7f6a04c62bae393d40840f5cc~mv2.avif" alt="Stethoscope on clinical forms" />
-                </div>
+          <div class="content-row reverse">
+            <div class="text-content">
+              <h2>Our Solution</h2>
+              <p>
+                SPEDA automates the extraction of patient information from
+                Electronic Health Record (EHR) systems, saving valuable time and
+                resources. We offer seamless data extraction via API access when
+                available, but our real expertise lies in pioneering innovative
+                methods that elegantly circumvent traditional limitations.
+              </p>
+              <p>
+                By leveraging advanced techniques, our solution integrates with
+                EHR systems without relying on direct API support. Extracted
+                data is then securely transferred to Electronic Data Capture
+                systems. Our on-premise solution ensures full data security,
+                with data never leaving local servers and only utilizing the
+                access rights already granted to medical researchers.
+              </p>
+              <p>
+                Additionally, our AI-driven technology transforms unstructured
+                doctor notes into organized data, making it ready for
+                statistical analysis and research.
+              </p>
             </div>
+            <div class="image-content">
+              <img
+                src="images/d22758_18c109c7f6a04c62bae393d40840f5cc~mv2.avif"
+                alt="Stethoscope on clinical forms"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- Supported By Section -->
-    <section class="supported-by">
+      <!-- Supported By Section -->
+      <section class="supported-by">
         <div class="container">
-            <div class="logos-grid">
-                <div class="logo-card">
-                    <img src="images/LH--mini-logo_03.avif" alt="KU Lighthouse" />
-                    <p>KU Lighthouse</p>
-                </div>
-                <div class="logo-card">
-                    <img src="images/d22758_3b2eeed0bdeb4fe8af3232dbb4d13c8c~mv2.avif" alt="Innovation Fund Denmark" />
-                    <p>Innovation Fund Denmark</p>
-                </div>
-                <div class="logo-card">
-                    <img src="images/Micro-grant-high.avif" alt="Micro Grant by the Danish Foundation for Entrepreneurship" />
-                    <p>Micro Grant</p>
-                </div>
+          <div class="section-header">
+            <h2>Supported By</h2>
+          </div>
+          <div class="logos-grid">
+            <div class="logo-card">
+              <img
+                src="images/LH--mini-logo_03.avif"
+                alt="KU Lighthouse"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
+            <div class="logo-card">
+              <img
+                src="images/d22758_3b2eeed0bdeb4fe8af3232dbb4d13c8c~mv2.avif"
+                alt="Innovation Fund Denmark"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="logo-card">
+              <img
+                src="images/Micro-grant-high.avif"
+                alt="Micro Grant by the Danish Foundation for Entrepreneurship"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- Why Us Section -->
-    <section id="why-us" class="section">
+      <!-- Why Us Section -->
+      <section id="why-us" class="section">
         <div class="container">
-            <div class="section-header">
-                <h2>Why you should work with us</h2>
-                <p class="subtitle">SPEDA accelerates research by automating data transfers</p>
+          <div class="section-header">
+            <h2>Why you should work with us</h2>
+            <p class="subtitle">
+              SPEDA accelerates research by automating data transfers
+            </p>
+          </div>
+
+          <div class="features-grid">
+            <div class="feature-column">
+              <div class="feature-icon">
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12,6 12,12 16,14" />
+                </svg>
+              </div>
+              <h3>Automatic</h3>
+              <p>
+                Data flows automatically from health records to the research
+                platform so researchers spend time analysing, not typing.
+              </p>
             </div>
-            
-            <div class="features-grid">
-                <div class="feature-column">
-                    <div class="feature-icon">📅</div>
-                    <h3>Automatic</h3>
-                    <p>Data flows automatically from health records to the research platform so researchers spend time analysing, not typing.</p>
-                </div>
-                <div class="feature-column">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Fast</h3>
-                    <p>The transfer happens in real time or multiple times per day to ensure the research database is always up to date.</p>
-                </div>
-                <div class="feature-column">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Secure</h3>
-                    <p>Data transfer reduces the number of people accessing raw health records, improving compliance with data regulations.</p>
-                </div>
+            <div class="feature-column">
+              <div class="feature-icon">
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polygon points="13,2 3,14 12,14 11,22 21,10 12,10" />
+                </svg>
+              </div>
+              <h3>Fast</h3>
+              <p>
+                The transfer happens in real time or multiple times per day to
+                ensure the research database is always up to date.
+              </p>
             </div>
-            
-            <div class="infographic">
-                <img src="images/d22758_b1344c8854b3441f912ae2f2627b6eae~mv2.avif" alt="Infographic showing data packages flowing to patient record and research platform" />
+            <div class="feature-column">
+              <div class="feature-icon">
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </div>
+              <h3>Secure</h3>
+              <p>
+                Data transfer reduces the number of people accessing raw health
+                records, improving compliance with data regulations.
+              </p>
             </div>
+          </div>
+
+          <div class="infographic">
+            <img
+              src="images/d22758_b1344c8854b3441f912ae2f2627b6eae~mv2.avif"
+              alt="Infographic showing data packages flowing to patient record and research platform"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- About Section -->
-    <section id="about" class="section">
+      <!-- About Section -->
+      <section id="about" class="section">
         <div class="container">
-            <div class="about-content">
-                <div class="story-vision-row">
-                    <div class="story-content">
-                        <h2>Our Story</h2>
-                        <p>SPEDA is a young MedTech company based in Copenhagen. It was founded by <strong>Ali Al-Alak</strong> who, during the COVID pandemic, personally experienced the inefficiencies of manual data extraction in research projects. He envisioned a better solution and, with support from Copenhagen University's innovation hub, assembled a team. Today SPEDA works on customer projects and collaborates with medical researchers to develop software that adheres to high privacy standards while increasing efficiency.</p>
-                        <div class="story-image-container">
-                            <img src="images/11062b_afa48ab6ade4434c882e28c65f76a373~mv2.avif" alt="Overhead photo of team collaboration" class="story-image" />
-                        </div>
-                    </div>
-                    
-                    <div class="vision-content">
-                        <h2>Our Vision</h2>
-                        <p>SPEDA's vision is to harness data to drive healthcare research while respecting patient privacy. They aim to remove barriers presented by outdated systems and imagine a future where data flows securely and insights are gleaned rapidly. Their mission emphasises balancing data utility and privacy, building systems with the highest security and ushering in a new era of healthcare innovation.</p>
-                        <div class="vision-image-container">
-                            <img src="images/d22758_4acc70661f4a47388a4a35d8f19a0c24~mv2.avif" alt="Researcher analyzing DNA on monitors" class="vision-image" />
-                        </div>
-                    </div>
+          <div class="about-content">
+            <div class="story-vision-row">
+              <div class="story-content">
+                <h2>Our Story</h2>
+                <p>
+                  SPEDA is a young, innovative MedTech company based in
+                  Copenhagen. We are dedicated to optimizing data infrastructure
+                  and handling in scientific clinical research, contributing to
+                  easier and better research outcomes.
+                </p>
+                <p>
+                  Our story begins with a refusal to accept the status quo when
+                  systems are broken. During the COVID crisis, our CEO and
+                  co-founder Ali experienced firsthand the challenges of medical
+                  research data extraction. He found that the process was
+                  manual, time-consuming, and hindered the discovery of rapid
+                  solutions. Despite being told there was no better way, Ali
+                  spent his free time envisioning an improved solution.
+                  Copenhagen University's hub for innovative solutions saw the
+                  potential and supported SPEDA early on. Since then, Ali has
+                  assembled a team of experts with medical, technical, and
+                  commercial backgrounds who share his vision.
+                </p>
+                <p>
+                  The SPEDA team has been busy developing our software, working
+                  on multiple customer projects, and exploring ways to further
+                  leverage our technology to drive better research. By
+                  collaborating closely with medical researchers, we ensure our
+                  solutions adhere to the highest privacy standards while
+                  improving research efficiency. We're excited to build the
+                  future of medical research together.
+                </p>
+                <div class="story-image-container">
+                  <img
+                    src="images/11062b_afa48ab6ade4434c882e28c65f76a373~mv2.avif"
+                    alt="Overhead photo of team collaboration"
+                    class="story-image"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </div>
-            </div>
-        </div>
-    </section>
+              </div>
 
-    <!-- Team Section -->
-    <section id="team" class="section">
+              <div class="vision-content">
+                <h2>Our Vision</h2>
+                <p>
+                  At SPEDA, we believe in harnessing the immense power of data
+                  to drive human health and research forward. We recognize that
+                  the key to unlocking groundbreaking medical discoveries lies
+                  within the vast amounts of health data already collected.
+                </p>
+                <p>
+                  For too long, outdated systems and cumbersome processes have
+                  hindered our ability to fully utilize this valuable resource.
+                  We envision a future where these barriers no longer exist,
+                  where researchers can access and analyze data swiftly and
+                  efficiently, accelerating the pace of medical breakthroughs.
+                </p>
+                <p>
+                  However, we understand that with great power comes great
+                  responsibility. We hold personal privacy as a paramount
+                  concern in this data-driven future. Our mission is to develop
+                  innovative solutions that strike the delicate balance between
+                  data utility and individual privacy. We are committed to
+                  building systems with the highest level of security, ensuring
+                  that sensitive information remains protected while still
+                  enabling researchers to extract meaningful insights.
+                </p>
+                <p>
+                  By reimagining how we handle and process health data, we aim
+                  to usher in a new era of medical research - one where data
+                  flows freely yet securely, where insights are gleaned rapidly,
+                  and where advancements in healthcare are limited only by our
+                  imagination, not our tools.
+                </p>
+                <p>
+                  At SPEDA, we're not just optimizing data infrastructure; we're
+                  paving the way for a healthier future for all of humanity.
+                </p>
+                <div class="vision-image-container">
+                  <img
+                    src="images/d22758_4acc70661f4a47388a4a35d8f19a0c24~mv2.avif"
+                    alt="Researcher analyzing DNA on monitors"
+                    class="vision-image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Team Section -->
+      <section id="team" class="section">
         <div class="container">
+          <div class="section-header">
             <h2>Our Team</h2>
-            <div class="team-grid">
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="images/4.avif" alt="Nikola Burger" />
-                    </div>
-                    <h3>Nikola Burger</h3>
-                    <p>Chief Commercial Officer (CCO)</p>
-                    <a href="#" class="linkedin-link">🔗</a>
-                </div>
-                
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="images/4 (1).avif" alt="Ali Al-Alak" />
-                    </div>
-                    <h3>Ali Al-Alak</h3>
-                    <p>Chief Executive Officer (CEO)</p>
-                    <a href="#" class="linkedin-link">🔗</a>
-                </div>
-                
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="images/4.avif" alt="Tom Quast" />
-                    </div>
-                    <h3>Tom Quast</h3>
-                    <p>Chief Technology Officer (CTO)</p>
-                    <a href="#" class="linkedin-link">🔗</a>
-                </div>
-                
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="images/4 (1).avif" alt="Jesper Gür" />
-                    </div>
-                    <h3>Jesper Gür</h3>
-                    <p>Medical Associate</p>
-                    <a href="#" class="linkedin-link">🔗</a>
-                </div>
-                
-                <div class="team-card">
-                    <div class="team-photo">
-                        <img src="images/4.avif" alt="Persefoni Nastou" />
-                    </div>
-                    <h3>Persefoni Nastou</h3>
-                    <p>Business Developer</p>
-                    <a href="#" class="linkedin-link">🔗</a>
-                </div>
+          </div>
+          <div class="team-grid">
+            <div class="team-card">
+              <div class="team-photo">
+                <img
+                  src="images/nikola.jpg"
+                  alt="Nikola Burger"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="team-info">
+                <h3>Nikola Burger</h3>
+                <p class="team-role">Chief Commercial Officer (CCO)</p>
+                <a
+                  href="https://www.linkedin.com/in/nikola-burger/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="linkedin-link"
+                  aria-label="Nikola Burger's LinkedIn profile"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+                    />
+                    <rect x="2" y="9" width="4" height="12" />
+                    <circle cx="4" cy="4" r="2" />
+                  </svg>
+                </a>
+              </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Testimonials Section -->
-    <section class="testimonials">
-        <div class="container">
-            <div class="testimonial-slider">
-                <button class="slider-btn prev" onclick="prevTestimonial()">‹</button>
-                <div class="testimonial-content">
-                    <blockquote>
-                        "Working with this team has been incredibly beneficial. They're easily accessible and quick to respond, which I really appreciate. They consistently provided a clear overview of the data and storage procedures, demonstrating a firm grasp on where and how we would retrieve the information. The data they delivered was high-quality and user-friendly, though I did need to manually look up some details that were not included in the initial extraction. I would definitely use their services again and wouldn't hesitate to recommend them to others, especially for projects involving 100 patients or more. For larger datasets, I see tremendous potential for time savings. Overall, their service has significantly streamlined our research process."
-                    </blockquote>
-                    <div class="testimonial-source">
-                        <img src="images/d22758_3b2eeed0bdeb4fe8af3232dbb4d13c8c~mv2.avif" alt="Region Hovedstaden" class="testimonial-logo" />
-                        <p>Medical Researcher, Danish Capital Region</p>
-                    </div>
-                </div>
-                <button class="slider-btn next" onclick="nextTestimonial()">›</button>
+            <div class="team-card">
+              <div class="team-photo">
+                <img
+                  src="images/ali.jpg"
+                  alt="Ali Al-Alak"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="team-info">
+                <h3>Ali Al-Alak</h3>
+                <p class="team-role">Chief Executive Officer (CEO)</p>
+                <a
+                  href="https://www.linkedin.com/in/alialalak"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="linkedin-link"
+                  aria-label="Ali Al-Alak's LinkedIn profile"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+                    />
+                    <rect x="2" y="9" width="4" height="12" />
+                    <circle cx="4" cy="4" r="2" />
+                  </svg>
+                </a>
+              </div>
             </div>
-        </div>
-    </section>
 
-    <!-- FAQ Section -->
-    <section id="faq" class="section">
+            <div class="team-card">
+              <div class="team-photo">
+                <img
+                  src="images/tom.jpg"
+                  alt="Tom Quast"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="team-info">
+                <h3>Tom Quast</h3>
+                <p class="team-role">Chief Technology Officer (CTO)</p>
+                <a
+                  href="https://www.linkedin.com/in/tomquast/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="linkedin-link"
+                  aria-label="Tom Quast's LinkedIn profile"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+                    />
+                    <rect x="2" y="9" width="4" height="12" />
+                    <circle cx="4" cy="4" r="2" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials Section -->
+      <section class="testimonials">
         <div class="container">
+          <div class="testimonial-content">
+            <blockquote>
+              "Working with this team has been incredibly beneficial. They're
+              easily accessible and quick to respond, which I really appreciate.
+              They consistently provided a clear overview of the data and
+              storage procedures, demonstrating a firm grasp on where and how we
+              would retrieve the information. The data they delivered was
+              high-quality and user-friendly, though I did need to manually look
+              up some details that were not included in the initial extraction.
+              I would definitely use their services again and wouldn't hesitate
+              to recommend them to others, especially for projects involving 100
+              patients or more. For larger datasets, I see tremendous potential
+              for time savings. Overall, their service has significantly
+              streamlined our research process."
+            </blockquote>
+            <div class="testimonial-source">
+              <p>Medical Researcher, Danish Capital Region</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section id="faq" class="section">
+        <div class="container">
+          <div class="section-header">
             <h2>FAQ</h2>
-            <div class="faq-list">
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        How does your system extract data from health records?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>They use APIs when available but more commonly rely on an AI-based approach that navigates the EHR interface like a human but faster.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        What kinds of data can be extracted from health records?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Virtually any data stored in the EHR: vital signs, treatment plans, medical history, doctors' notes, medication prescriptions, laboratory results, etc.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        How is the extraction of sensitive data legally permitted?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>The solution runs on-premise; data never leaves the hospital. SPEDA uses the same access rights that researchers already have, so no additional permissions are needed.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        What measures are in place to ensure data security and patient privacy?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Data security and privacy are top priorities. The system never moves data off the researcher's server and transfers it directly to their secure EDC system.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        To which systems can you export the data?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Integration primarily targets REDCap but they can export to virtually any electronic data capture system.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        Are any approvals needed for your data extraction service?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>SPEDA does not handle ethical approvals; researchers must ensure they have them. Because the system is on-premise and SPEDA does not access the data, no additional approvals are typically required besides internal IT clearance.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        Which health record systems and locations are currently supported?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Currently focusing on the EPIC system and expanding across Denmark. They are open to other systems after assessment.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        What does your software cost?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Pricing is based on number of patients and data points; they aim to be cheaper than manual extraction and provide customised offers.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        How can researchers verify the accuracy of the extracted data?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>They have not encountered accuracy issues but are conducting a study to demonstrate accuracy. They offer to extract a small dataset and compare it with manual extraction.</p>
-                    </div>
-                </div>
+          </div>
+          <div class="faq-list">
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFaq(this)">
+                How does your system extract data from health records?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  Where APIs are available, we make use of them. However, we've
+                  found this is often not the case, which has held back
+                  solutions to emerge. We therefore use an innovative AI-based
+                  approach that navigates the system as a human would - just
+                  automatically and much faster.
+                </p>
+              </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Final CTA Section -->
-    <section class="final-cta">
-        <div class="container">
-            <h2>Want to know more about SPEDA? Contact Us</h2>
-            <button class="contact-btn large" onclick="openModal()">Contact Us</button>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p><strong>SPEDA ApS</strong></p>
-                <p>Bryghusgade 8, Christianshavn</p>
-                <div class="footer-links">
-                    <a href="mailto:hi@speda.io">✉️</a>
-                    <a href="#">🔗</a>
-                </div>
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFaq(this)">
+                What kinds of data can be extracted from health records?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  Virtually anything stored in the records - we can extract
+                  vital signs, treatment plans, medical history, doctors' notes,
+                  medication prescriptions, laboratory results, and much more.
+                </p>
+              </div>
             </div>
+
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFaq(this)">
+                How is the extraction of sensitive data legally permitted?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  We operate on-premise, and therefore the data never leaves the
+                  hospital's system. SPEDA simply utilizes the access that
+                  researchers already have through ethical approval of their
+                  research. Since SPEDA never has direct access to the data, no
+                  additional permissions are needed.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFaq(this)">
+                What measures are in place to ensure data security and patient
+                privacy?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  Data security and patient privacy are our top priorities, and
+                  we adhere to the highest standards. We've built a system that
+                  works on-premise, ensuring data never leaves the researcher's
+                  server. Data is then directly extracted to the researcher's
+                  secure electronic data capture system.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFaq(this)">
+                To which systems can you export the data?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  Our customers' preferred choice is REDCap, which is our main
+                  integration. However, we can export data into virtually any
+                  electronic data capture system that the researcher might use.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFaq(this)">
+                Are any approvals needed for your data extraction service?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  We don't manage the ethical approval of studies; this must be
+                  ensured by the researchers beforehand. Otherwise, no approvals
+                  are needed since we work on-premise and don't access the data
+                  ourselves. Depending on your hospital, your IT department
+                  might want to additionally approve the software. Our team
+                  works closely with IT departments to handle this process
+                  smoothly.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFaq(this)">
+                Which health record systems and locations are currently
+                supported?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  We currently focus on EPIC and are expanding to serve all
+                  regions in Denmark. However, we're always pushing to enable
+                  our solutions in other markets. If you're using a different
+                  system, feel free to reach out, and our team will assess if we
+                  can serve you.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFaq(this)">
+                What does your software cost?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  We charge based on the number of patients and datapoints
+                  extracted. Therefore, it's difficult to specify a fixed price.
+                  We always aim to be significantly cheaper than the manual
+                  alternative. For a specific price, please contact us for a
+                  customized offer for your project.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFaq(this)">
+                How can researchers verify the accuracy of the extracted data?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  So far, accuracy hasn't been an issue in our projects. We're
+                  working on publishing a study to demonstrate our product's
+                  accuracy. To ensure we meet our customers' high standards, we
+                  always offer to work on a smaller dataset that has been
+                  manually extracted in the past as a first step, comparing the
+                  manual extraction with ours.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-    </footer>
-    
+      </section>
+
+      <!-- Final CTA Section -->
+      <section class="final-cta">
+        <div class="container">
+          <div class="cta-container">
+            <h2>Want to know more about SPEDA?</h2>
+            <button class="contact-btn" onclick="openModal()">
+              Contact Us
+            </button>
+            <p class="cta-subtitle">Let us know what you would like to discuss and we will set up a meeting</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-content">
+            <!-- Company Info Column -->
+            <div class="footer-column footer-company">
+              <div class="footer-logo">
+                <img src="images/logo.avif" alt="SPEDA" class="footer-logo-img">
+              </div>
+              <p class="footer-tagline">Automating Medical Research Data</p>
+              <p class="footer-description">Pioneering AI-driven solutions that transform how medical researchers access and analyze health data, accelerating discoveries that save lives.</p>
+              
+              <div class="footer-certifications">
+                <div class="cert-item">
+                  <span class="cert-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                  </span>
+                  <span>GDPR Compliant</span>
+                </div>
+                <div class="cert-item">
+                  <span class="cert-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                      <circle cx="12" cy="16" r="1"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                  </span>
+                  <span>ISO 27001</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Links Column -->
+            <div class="footer-column footer-links">
+              <h4>Quick Links</h4>
+              <nav class="footer-nav">
+                <a href="#solution" class="footer-link">Our Solution</a>
+                <a href="#why-us" class="footer-link">Why Choose Us</a>
+                <a href="#about" class="footer-link">About SPEDA</a>
+                <a href="#team" class="footer-link">Our Team</a>
+                <a href="#faq" class="footer-link">FAQ</a>
+              </nav>
+            </div>
+
+            <!-- Contact & Social Column -->
+            <div class="footer-column footer-contact">
+              <h4>Get in Touch</h4>
+              <div class="contact-info">
+                <div class="contact-item">
+                  <span class="contact-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                      <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                  </span>
+                  <a href="mailto:hi@speda.io" class="contact-link">hi@speda.io</a>
+                </div>
+                <div class="contact-item">
+                  <span class="contact-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                  </span>
+                  <span>Bryghusgade 8<br>Christianshavn, Copenhagen</span>
+                </div>
+              </div>
+
+              <div class="social-links">
+                <a href="https://www.linkedin.com/company/speda" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="SPEDA LinkedIn">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                    <rect x="2" y="9" width="4" height="12"/>
+                    <circle cx="4" cy="4" r="2"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Bar -->
+          <div class="footer-bottom">
+            <div class="footer-bottom-content">
+              <div class="footer-legal">
+                <p>&copy; 2024 SPEDA ApS. All rights reserved.</p>
+                <p class="footer-reg">CVR: 42342580 | Copenhagen, Denmark</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
     </main>
 
     <!-- Contact Modal -->
     <div id="contactModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Let's Meet</h2>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
-            </div>
-            <form class="contact-form">
-                <div class="form-message" id="formMessage"></div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName">First name</label>
-                        <input type="text" id="firstName" name="firstName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">Last name</label>
-                        <input type="text" id="lastName" name="lastName" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" rows="4" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" required>
-                        I'm not a robot (reCAPTCHA placeholder)
-                    </label>
-                </div>
-                <button type="submit" class="submit-btn">
-                    <div class="spinner"></div>
-                    <span class="btn-text">Send</span>
-                </button>
-                <div class="alternative-contact">
-                    <p>✉️ hi@speda.io</p>
-                </div>
-            </form>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Let's Meet</h2>
+          <button class="close-btn" onclick="closeModal()">&times;</button>
         </div>
+        <form class="contact-form">
+          <div class="form-message" id="formMessage"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First name</label>
+              <input type="text" id="firstName" name="firstName" required />
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last name</label>
+              <input type="text" id="lastName" name="lastName" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" required />
+              I'm not a robot (reCAPTCHA placeholder)
+            </label>
+          </div>
+          <button type="submit" class="submit-btn">
+            <div class="spinner"></div>
+            <span class="btn-text">Send</span>
+          </button>
+          <div class="alternative-contact">
+            <p>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              hi@speda.io
+            </p>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
