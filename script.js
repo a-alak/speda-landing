@@ -1,3 +1,6 @@
+// Test if JavaScript is loading
+console.log('Script.js is loading...');
+
 // Modern scroll utilities using ES6+
 const ScrollUtils = {
     headerHeight: 70,
@@ -154,19 +157,6 @@ window.addEventListener('click', function(event) {
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         closeModal();
-        closeMobileMenu();
-    }
-});
-
-// Close mobile menu when clicking outside
-document.addEventListener('click', function(event) {
-    const overlay = document.getElementById('mobileNavOverlay');
-    const toggle = document.querySelector('.mobile-menu-toggle');
-    
-    if (overlay.classList.contains('active') && 
-        !overlay.contains(event.target) && 
-        !toggle.contains(event.target)) {
-        closeMobileMenu();
     }
 });
 
@@ -304,53 +294,13 @@ function updateParallaxEffect() {
     }
 }
 
-// Modern mobile menu class
-class MobileMenu {
-    constructor() {
-        this.overlay = document.getElementById('mobileNavOverlay');
-        this.toggle = document.querySelector('.mobile-menu-toggle');
-        this.isOpen = false;
-    }
-    
-    toggle() {
-        this.isOpen ? this.close() : this.open();
-    }
-    
-    open() {
-        if (this.isOpen) return;
-        
-        this.overlay?.classList.add('active');
-        this.toggle?.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        this.isOpen = true;
-        
-        // Dispatch custom event
-        document.dispatchEvent(new CustomEvent('mobileMenuToggle', { detail: { isOpen: true } }));
-    }
-    
-    close() {
-        if (!this.isOpen) return;
-        
-        this.overlay?.classList.remove('active');
-        this.toggle?.classList.remove('active');
-        document.body.style.overflow = 'auto';
-        this.isOpen = false;
-        
-        // Dispatch custom event
-        document.dispatchEvent(new CustomEvent('mobileMenuToggle', { detail: { isOpen: false } }));
-    }
-}
-
-// Initialize mobile menu
-const mobileMenu = new MobileMenu();
-
-// Legacy functions for backwards compatibility
+// Legacy mobile menu functions - now empty since mobile menu is removed
 function toggleMobileMenu() {
-    mobileMenu.toggle();
+    // Mobile menu functionality removed - now shows simple logo + CTA layout
 }
 
 function closeMobileMenu() {
-    mobileMenu.close();
+    // Mobile menu functionality removed - now shows simple logo + CTA layout
 }
 
 // Simple image lazy loading utility
@@ -410,16 +360,7 @@ class App {
             });
         });
         
-        // Setup mobile nav links
-        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-        mobileNavLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                ScrollUtils.scrollToSection(targetId);
-                mobileMenu.close();
-            });
-        });
+        // Mobile nav links removed - using simple logo + CTA layout on mobile
     }
     
     setupScrollHandlers() {
@@ -489,16 +430,299 @@ class App {
     }
 }
 
+// Team Carousel functionality
+class TeamCarousel {
+    constructor() {
+        this.container = document.querySelector('.team-grid');
+        this.dots = document.querySelectorAll('.carousel-dot');
+        this.cards = document.querySelectorAll('.team-card');
+        this.currentSlide = 0;
+        
+        console.log('TeamCarousel constructor:', {
+            container: this.container,
+            dotsCount: this.dots.length,
+            cardsCount: this.cards.length,
+            windowWidth: window.innerWidth
+        });
+        
+        this.init();
+    }
+    
+    init() {
+        console.log('TeamCarousel init called:', {
+            hasContainer: !!this.container,
+            windowWidth: window.innerWidth,
+            shouldInit: this.container && window.innerWidth <= 639
+        });
+        
+        if (!this.container || window.innerWidth > 639) {
+            console.log('TeamCarousel init aborted - no container or window too wide');
+            return;
+        }
+        
+        console.log('TeamCarousel initializing...');
+        
+        // Add throttled scroll event listener
+        let scrollTimeout;
+        this.container.addEventListener('scroll', () => {
+            console.log('Scroll event fired');
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                this.handleScroll();
+            }, 100);
+        });
+        
+        // Add click listeners to dots
+        this.dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                console.log(`Dot ${index} clicked`);
+                this.goToSlide(index);
+            });
+        });
+        
+        // Add touch support
+        this.setupTouchHandlers();
+        
+        // Initial indicator update
+        this.updateIndicators();
+        
+        console.log('TeamCarousel initialization complete');
+    }
+    
+    handleScroll() {
+        const scrollLeft = this.container.scrollLeft;
+        const cardWidth = this.cards[0].offsetWidth + 40; // card width + margins
+        const newSlide = Math.round(scrollLeft / cardWidth);
+        
+        // Ensure slide is within bounds
+        const clampedSlide = Math.max(0, Math.min(newSlide, this.cards.length - 1));
+        
+        // Debug logging
+        console.log(`Scroll: ${scrollLeft}, CardWidth: ${cardWidth}, NewSlide: ${newSlide}, Clamped: ${clampedSlide}`);
+        
+        if (clampedSlide !== this.currentSlide) {
+            this.currentSlide = clampedSlide;
+            this.updateIndicators();
+            console.log(`Updated to slide ${this.currentSlide}`);
+        }
+    }
+    
+    goToSlide(slideIndex) {
+        if (slideIndex < 0 || slideIndex >= this.cards.length) return;
+        
+        const cardWidth = this.cards[0].offsetWidth + 40; // card width + margins
+        const scrollLeft = slideIndex * cardWidth;
+        
+        this.container.scrollTo({
+            left: scrollLeft,
+            behavior: 'smooth'
+        });
+        
+        this.currentSlide = slideIndex;
+        this.updateIndicators();
+    }
+    
+    updateIndicators() {
+        this.dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === this.currentSlide);
+        });
+        console.log(`Indicators updated: active slide ${this.currentSlide}`);
+    }
+    
+    setupTouchHandlers() {
+        let startX = 0;
+        let isDragging = false;
+        
+        this.container.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+        });
+        
+        this.container.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+        });
+        
+        this.container.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            
+            const endX = e.changedTouches[0].clientX;
+            const diffX = startX - endX;
+            
+            if (Math.abs(diffX) > 50) { // Minimum swipe distance
+                if (diffX > 0 && this.currentSlide < this.cards.length - 1) {
+                    this.goToSlide(this.currentSlide + 1);
+                } else if (diffX < 0 && this.currentSlide > 0) {
+                    this.goToSlide(this.currentSlide - 1);
+                }
+            }
+            
+            isDragging = false;
+        });
+    }
+}
+
+// Simple Team Carousel function (backup approach)
+function initTeamCarousel() {
+    console.log('initTeamCarousel called');
+    
+    const container = document.querySelector('.team-grid');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const cards = document.querySelectorAll('.team-card');
+    
+    console.log('Elements found:', {
+        container: !!container,
+        dotsCount: dots.length,
+        cardsCount: cards.length,
+        windowWidth: window.innerWidth
+    });
+    
+    if (!container || window.innerWidth > 639) {
+        console.log('Carousel not initialized - no container or window too wide');
+        return;
+    }
+    
+    let currentSlide = 0;
+    let autoRotateInterval;
+    let isUserInteracting = false;
+    let userInteractionTimeout;
+    
+    function updateDots() {
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentSlide);
+        });
+        console.log(`Dots updated: active slide ${currentSlide}`);
+    }
+    
+    function goToSlide(slideIndex) {
+        const cardWidth = cards[0].offsetWidth + 40;
+        const scrollLeft = slideIndex * cardWidth;
+        
+        container.scrollTo({
+            left: scrollLeft,
+            behavior: 'smooth'
+        });
+        
+        currentSlide = slideIndex;
+        updateDots();
+        console.log(`Moved to slide ${currentSlide}`);
+    }
+    
+    function startAutoRotate() {
+        if (autoRotateInterval) return;
+        
+        autoRotateInterval = setInterval(() => {
+            if (!isUserInteracting) {
+                const nextSlide = (currentSlide + 1) % cards.length;
+                console.log(`Auto-rotating from ${currentSlide} to ${nextSlide}`);
+                goToSlide(nextSlide);
+            }
+        }, 3000);
+        console.log('Auto-rotate started');
+    }
+    
+    function stopAutoRotate() {
+        if (autoRotateInterval) {
+            clearInterval(autoRotateInterval);
+            autoRotateInterval = null;
+            console.log('Auto-rotate stopped');
+        }
+    }
+    
+    function handleUserInteraction() {
+        isUserInteracting = true;
+        stopAutoRotate();
+        
+        // Clear existing timeout
+        clearTimeout(userInteractionTimeout);
+        
+        // Restart auto-rotate after 5 seconds of no interaction
+        userInteractionTimeout = setTimeout(() => {
+            isUserInteracting = false;
+            startAutoRotate();
+        }, 5000);
+    }
+    
+    // Add dot click listeners
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', function() {
+            console.log(`Dot ${index} clicked`);
+            handleUserInteraction();
+            goToSlide(index);
+        });
+    });
+    
+    // Handle manual swiping/touching
+    container.addEventListener('touchstart', handleUserInteraction);
+    
+    // Simplified scroll detection (only for manual scrolling detection)
+    let scrollTimeout;
+    container.addEventListener('scroll', function() {
+        // Only handle if user is manually scrolling
+        if (!isUserInteracting && scrollTimeout) return;
+        
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const scrollLeft = container.scrollLeft;
+            const cardWidth = cards[0].offsetWidth + 40;
+            const newSlide = Math.round(scrollLeft / cardWidth);
+            const clampedSlide = Math.max(0, Math.min(newSlide, cards.length - 1));
+            
+            if (clampedSlide !== currentSlide) {
+                currentSlide = clampedSlide;
+                updateDots();
+                console.log(`Manual scroll detected: updated to slide ${currentSlide}`);
+            }
+        }, 150);
+    });
+    
+    // Initial setup
+    updateDots();
+    startAutoRotate();
+    console.log('Team carousel initialized successfully with clean auto-rotate');
+}
+
 // Initialize page functionality
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize performance monitoring
-    new PerformanceMonitor();
+    console.log('DOM Content Loaded - starting initialization');
     
-    // Initialize modern app
-    new App();
+    try {
+        // Initialize performance monitoring
+        console.log('Initializing PerformanceMonitor...');
+        new PerformanceMonitor();
+        console.log('PerformanceMonitor initialized');
+    } catch (error) {
+        console.error('Error initializing PerformanceMonitor:', error);
+    }
     
-    // Initialize testimonial
-    updateTestimonial();
+    try {
+        // Initialize modern app
+        console.log('Initializing App...');
+        new App();
+        console.log('App initialized');
+    } catch (error) {
+        console.error('Error initializing App:', error);
+    }
+    
+    try {
+        // Initialize testimonial
+        console.log('Initializing testimonial...');
+        updateTestimonial();
+        console.log('Testimonial updated');
+    } catch (error) {
+        console.error('Error updating testimonial:', error);
+    }
+    
+    try {
+        // Initialize team carousel
+        console.log('About to initialize TeamCarousel');
+        initTeamCarousel();
+        console.log('TeamCarousel initialization attempted');
+    } catch (error) {
+        console.error('Error initializing TeamCarousel:', error);
+    }
+    
+    console.log('All initialization attempts completed');
 });
 
 // Prevent form submission if required fields are empty

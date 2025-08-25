@@ -160,48 +160,6 @@
             <a href="#faq" class="nav-link">FAQ</a>
           </nav>
           <button class="contact-btn" onclick="openModal()">Contact Us</button>
-          <button
-            class="mobile-menu-toggle"
-            onclick="toggleMobileMenu()"
-            aria-label="Toggle navigation menu"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-        </div>
-
-        <!-- Mobile Navigation Overlay -->
-        <div class="mobile-nav-overlay" id="mobileNavOverlay">
-          <nav class="mobile-navigation">
-            <a
-              href="#solution"
-              class="mobile-nav-link"
-              onclick="closeMobileMenu()"
-              >Solution</a
-            >
-            <a
-              href="#why-us"
-              class="mobile-nav-link"
-              onclick="closeMobileMenu()"
-              >Why Us</a
-            >
-            <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()"
-              >About</a
-            >
-            <a href="#team" class="mobile-nav-link" onclick="closeMobileMenu()"
-              >Team</a
-            >
-            <a href="#faq" class="mobile-nav-link" onclick="closeMobileMenu()"
-              >FAQ</a
-            >
-            <button
-              class="mobile-contact-btn"
-              onclick="openModal(); closeMobileMenu();"
-            >
-              Contact Us
-            </button>
-          </nav>
         </div>
       </div>
     </header>
@@ -524,7 +482,8 @@
           <div class="section-header">
             <h2>Our Team</h2>
           </div>
-          <div class="team-grid">
+          <div class="team-section-wrapper">
+            <div class="team-grid">
             <div class="team-card">
               <div class="team-photo">
                 <img
@@ -640,6 +599,12 @@
                   </svg>
                 </a>
               </div>
+            </div>
+            </div>
+            <div class="team-carousel-indicators">
+              <span class="carousel-dot active" data-slide="0"></span>
+              <span class="carousel-dot" data-slide="1"></span>
+              <span class="carousel-dot" data-slide="2"></span>
             </div>
           </div>
         </div>
@@ -833,7 +798,10 @@
             <button class="contact-btn" onclick="openModal()">
               Contact Us
             </button>
-            <p class="cta-subtitle">Let us know what you would like to discuss and we will set up a meeting</p>
+            <p class="cta-subtitle">
+              Let us know what you would like to discuss and we will set up a
+              meeting
+            </p>
           </div>
         </div>
       </section>
@@ -845,26 +813,52 @@
             <!-- Company Info Column -->
             <div class="footer-column footer-company">
               <div class="footer-logo">
-                <img src="images/logo.avif" alt="SPEDA" class="footer-logo-img">
+                <img
+                  src="images/logo.avif"
+                  alt="SPEDA"
+                  class="footer-logo-img"
+                />
               </div>
               <p class="footer-tagline">Automating Medical Research Data</p>
-              <p class="footer-description">Pioneering AI-driven solutions that transform how medical researchers access and analyze health data, accelerating discoveries that save lives.</p>
-              
+              <p class="footer-description">
+                Pioneering AI-driven solutions that transform how medical
+                researchers access and analyze health data, accelerating
+                discoveries that save lives.
+              </p>
+
               <div class="footer-certifications">
                 <div class="cert-item">
                   <span class="cert-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                   </span>
                   <span>GDPR Compliant</span>
                 </div>
                 <div class="cert-item">
                   <span class="cert-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                      <circle cx="12" cy="16" r="1"/>
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <circle cx="12" cy="16" r="1" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
                   </span>
                   <span>ISO 27001</span>
@@ -890,30 +884,71 @@
               <div class="contact-info">
                 <div class="contact-item">
                   <span class="contact-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                      <polyline points="22,6 12,13 2,6"/>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                      />
+                      <polyline points="22,6 12,13 2,6" />
                     </svg>
                   </span>
-                  <a href="mailto:hi@speda.io" class="contact-link">hi@speda.io</a>
+                  <a href="mailto:hi@speda.io" class="contact-link"
+                    >hi@speda.io</a
+                  >
                 </div>
                 <div class="contact-item">
                   <span class="contact-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                      <circle cx="12" cy="10" r="3"/>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                      />
+                      <circle cx="12" cy="10" r="3" />
                     </svg>
                   </span>
-                  <span>Bryghusgade 8<br>Christianshavn, Copenhagen</span>
+                  <span>Bryghusgade 8<br />Christianshavn, Copenhagen</span>
                 </div>
               </div>
 
               <div class="social-links">
-                <a href="https://www.linkedin.com/company/speda" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="SPEDA LinkedIn">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                    <rect x="2" y="9" width="4" height="12"/>
-                    <circle cx="4" cy="4" r="2"/>
+                <a
+                  href="https://www.linkedin.com/company/speda"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-link"
+                  aria-label="SPEDA LinkedIn"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+                    />
+                    <rect x="2" y="9" width="4" height="12" />
+                    <circle cx="4" cy="4" r="2" />
                   </svg>
                 </a>
               </div>
@@ -972,9 +1007,21 @@
           </button>
           <div class="alternative-contact">
             <p>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style="vertical-align: text-bottom; margin-right: 4px"
+              >
+                <path
+                  d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                />
+                <polyline points="22,6 12,13 2,6" />
               </svg>
               hi@speda.io
             </p>
